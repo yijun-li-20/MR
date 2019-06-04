@@ -1,15 +1,18 @@
 package sjtu.sdic.mapreduce.core;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.*;
 import sjtu.sdic.mapreduce.common.KeyValue;
 import sjtu.sdic.mapreduce.common.Utils;
+import sun.awt.SunHints;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+
+import static sjtu.sdic.mapreduce.WordCount.mapFunc;
+import static sjtu.sdic.mapreduce.common.Utils.*;
 
 /**
  * Created by Cachhe on 2019/4/19.
@@ -65,8 +68,53 @@ public class Mapper {
      * @param mapFunc the user-defined map function
      */
     public static void doMap(String jobName, int mapTask, String inFile, int nReduce, MapFunc mapFunc) {
-        File filename = new File(inFile);
+        List<File> files = new ArrayList<File>();
+        List<FileOutputStream> fos= new ArrayList<FileOutputStream>();
+        List<JSONArray> list = new ArrayList<JSONArray>();
+        File infile = new File(inFile);
+        FileReader fr = null;
+        try {
+            fr = new FileReader(infile);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        char[] content = new char[Integer.parseInt(String.valueOf(infile.length()))];
+        try {
+            fr.read(content);
+            fr.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        List<KeyValue> pair = mapFunc.map(inFile, String.valueOf(content));
+        for (int i=0;i<nReduce;i++){
+            try {
+                files.add(new File(reduceName(jobName, mapTask, i)));
+                fos.add(i, new FileOutputStream(files.get(i)));
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
+            list.add(new JSONArray());
+        }
+        for(KeyValue item : pair)    {
+            int basket = hashCode(item.key) % nReduce;
+            JSONArray filearray = list.get(basket);
+            filearray.add(item);
+            list.set(basket, filearray);
+            if(debugEnabled)
+                System.out.println("Log: key:"+item.key+"\tvalue:"+item.value+"\n");
+
+        }
+        for (int i=0;i<nReduce;i++){
+            try {
+                JSON.writeJSONString(fos.get(i), list.get(i));
+                fos.get(i).close();
+                } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
+
 
     /**
      * a simple method limiting hash code to be positive
@@ -77,4 +125,5 @@ public class Mapper {
     private static int hashCode(String src) {
         return src.hashCode() & Integer.MAX_VALUE;
     }
+
 }

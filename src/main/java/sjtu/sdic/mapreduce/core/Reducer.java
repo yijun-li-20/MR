@@ -5,14 +5,16 @@ import com.alibaba.fastjson.JSONObject;
 import sjtu.sdic.mapreduce.common.KeyValue;
 import sjtu.sdic.mapreduce.common.Utils;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
+import static sjtu.sdic.mapreduce.common.Utils.debugEnabled;
+import static sjtu.sdic.mapreduce.common.Utils.reduceName;
 
 /**
  * Created by Cachhe on 2019/4/19.
@@ -58,6 +60,96 @@ public class Reducer {
      * @param reduceFunc user-defined reduce function
      */
     public static void doReduce(String jobName, int reduceTask, String outFile, int nMap, ReduceFunc reduceFunc) {
-        
-    }
+        List<String> keys = new ArrayList<>();
+        Map<String, List<String>> kvs = new TreeMap<>();
+        for (int mapIndex = 0; mapIndex < nMap; mapIndex++) {
+            /*
+                midDatafileName := reduceName(jobName, mapTaskNumber, reduceTask)
+                file, err := os.Open(midDatafileName)
+                if err != nil {
+                    panic(err)
+                }
+                defer file.Close()
+             */
+            File file = new File(reduceName(jobName, mapIndex, reduceTask));
+            FileReader fr = null;
+            try {
+                fr = new FileReader(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            char[] content = new char[Integer.parseInt(String.valueOf(file.length()))];
+            try {
+                fr.read(content);
+                fr.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if(debugEnabled)
+                System.out.println(content);
+            /*
+                dec := json.NewDecoder(file)
+             */
+            JSONArray fileArray = JSONArray.parseArray(String.valueOf(content));
+            List<KeyValue> list = JSONObject.parseArray(fileArray.toJSONString(), KeyValue.class);
+
+            /*
+                for {
+                    var kv KeyValue
+                    err = dec.Decode(&kv)
+                    if err != nil {
+                        break
+                    }
+                    values, ok := kvs[kv.Key]
+                    if ok {
+                        kvs[kv.Key] = append(values, kv.Value)
+                    } else {
+                        kvs[kv.Key] = []string{kv.Value}
+                    }
+                }
+             */
+            for (KeyValue item : list) {
+                if (!kvs.containsKey(item.key)) {
+                    keys.add(item.key);
+                    List<String> pair = new ArrayList<>();
+                    pair.add(item.value);
+                    kvs.put(item.key, pair);
+                }
+                else {
+                    List<String> values = kvs.get(item.key);
+                    values.add(item.value);
+                    kvs.put(item.key, values);
+                }
+            }
+        }
+        /*
+            outputFile, err := os.Create(outFile)
+            if err != nil {
+                panic(err)
+            }
+            defer outputFile.Close()
+            enc := json.NewEncoder(outputFile)
+            for key, values := range kvs {
+                enc.Encode(KeyValue{key, reduceF(key, values)})
+            }
+         */
+
+        try {
+            FileWriter fw = new FileWriter(outFile);
+            JSONObject jsonObject = new JSONObject();
+            for (String key:keys) {
+                List<String> l = kvs.get(key);
+                String[] values = l.toArray(new String[l.size()]);
+                String value = reduceFunc.reduce(key, values);
+                jsonObject.put(key, value);
+            }
+            fw.write(jsonObject.toJSONString());
+            fw.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        }
+
 }

@@ -17,11 +17,34 @@ import java.util.regex.Pattern;
 public class WordCount {
 
     public static List<KeyValue> mapFunc(String file, String value) {
-        return null;
+        /*
+            words := strings.FieldsFunc(contents, func(r rune) bool {
+                return !unicode.IsLetter(r)
+            })
+            var kvs []mapreduce.KeyValue
+            for _, word := range words {
+                kvs = append(kvs, mapreduce.KeyValue{word, "1"})
+            }
+            return kvs
+         */
+        List<KeyValue> list=new ArrayList<>();
+        Pattern p = Pattern.compile("[a-zA-Z0-9]+");
+        Matcher m = p.matcher(value);
+        while (m.find()) {
+            list.add(new KeyValue(m.group(), "1"));
+        }
+        return list;
     }
 
     public static String reduceFunc(String key, String[] values) {
-        return null;
+        /*
+                return strconv.Itoa(len(values))
+         */
+        int count = 0;
+        for(String item: values){
+            count += Integer.valueOf(item);
+        }
+        return Integer.toString(count);
     }
 
     public static void main(String[] args) {

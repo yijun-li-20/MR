@@ -33,7 +33,7 @@ import static sjtu.sdic.mapreduce.common.Utils.debug;
  * Created by Cachhe on 2019/4/19.
  */
 public class Master implements MasterRpcService {
-    public static final int MASTER_PORT = 12200;
+    public static final int MASTER_PORT = 13300; //12200
     private final static Map<String, MasterRpcService> masterRpcServiceMap = new ConcurrentHashMap<>();
     private final static Map<String, ConsumerConfig<MasterRpcService>> masterConsumerMap = new ConcurrentHashMap<>();
 
@@ -300,7 +300,7 @@ public class Master implements MasterRpcService {
             // start RPC server
             ServerConfig serverConfig = new ServerConfig()
                     .setProtocol("bolt") // Set a protocol, which is bolt by default
-                    .setPort(MASTER_PORT) // set a port, which is 12200 by default
+                    .setPort(MASTER_PORT) // set a port, which is 12200 by default: MASTER_PORT
                     .setDaemon(true); // daemon thread
 
             rpc = new ProviderConfig<MasterRpcService>()

@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * Created by Cachhe on 2019/4/22.
  */
 public class Worker implements WorkerRpcService {
-    public static final int WORKER_PORT = 13300;
+    public static final int WORKER_PORT = 11100; // 13300
     private final static Map<String, WorkerRpcService> workerRpcServiceMap = new ConcurrentHashMap<>();
     private final static Map<String, ConsumerConfig<WorkerRpcService>> workerConsumerMap = new ConcurrentHashMap<>();
 
