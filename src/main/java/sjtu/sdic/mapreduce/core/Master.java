@@ -33,7 +33,7 @@ import static sjtu.sdic.mapreduce.common.Utils.debug;
  * Created by Cachhe on 2019/4/19.
  */
 public class Master implements MasterRpcService {
-    public static final int MASTER_PORT = 13300; //12200
+    public static final int MASTER_PORT = 12200;
     private final static Map<String, MasterRpcService> masterRpcServiceMap = new ConcurrentHashMap<>();
     private final static Map<String, ConsumerConfig<MasterRpcService>> masterConsumerMap = new ConcurrentHashMap<>();
 

@@ -16,11 +16,56 @@ import java.util.regex.Pattern;
 public class InvertedIndex {
 
     public static List<KeyValue> mapFunc(String file, String value) {
-        return null;
+        /**
+         *  words := strings.FieldsFunc(value, func(r rune) bool {
+         *         return !unicode.IsLetter(r)
+         *     })
+         *     var kvs []mapreduce.KeyValue
+         *     for _, word := range words {
+         *         kvs = append(kvs, mapreduce.KeyValue{word, document})
+         *     }
+         *     return kvs
+         */
+        List<KeyValue> list=new ArrayList<>();
+        Pattern p = Pattern.compile("[a-zA-Z]+");
+        Matcher m = p.matcher(value);
+        while (m.find()) {
+            list.add(new KeyValue(m.group(), file));
+        }
+        return list;
     }
 
     public static String reduceFunc(String key, String[] values) {
-        return null;
+        /**
+         * values = removeDuplicationAndSort(values)
+         * return strconv.Itoa(len(values)) + " " + strings.Join(values, ",")
+         * func removeDuplicationAndSort(values []string) []string {
+         * kvs := make(map[string]struct{})
+         *     for _, value := range values {
+         *         _, ok := kvs[value]
+         *         if !ok {
+         *             kvs[value] = struct{}{}
+         *         }
+         *     }
+         *     var ret []string
+         *     for k := range kvs {
+         *         ret = append(ret, k)
+         *     }
+         *     sort.Strings(ret)
+         *     return ret
+         * }
+         */
+        //Arrays.sort(values);
+        Set<String> ts = new TreeSet<>();
+        Collections.addAll(ts, values);
+        StringBuffer s = new StringBuffer();
+        for(String it:ts){
+            s.append(" ");
+            s.append(it);
+
+        }
+
+        return ts.size() + s.toString();
     }
 
     public static void main(String[] args) {

@@ -1,6 +1,7 @@
 package sjtu.sdic.mapreduce.core;
 
 import com.alipay.sofa.rpc.core.exception.SofaRpcException;
+import com.alipay.sofa.rpc.core.exception.SofaTimeOutException;
 import sjtu.sdic.mapreduce.common.Channel;
 import sjtu.sdic.mapreduce.common.DoTaskArgs;
 import sjtu.sdic.mapreduce.common.JobPhase;
@@ -8,9 +9,7 @@ import sjtu.sdic.mapreduce.common.Utils;
 import sjtu.sdic.mapreduce.rpc.Call;
 import sjtu.sdic.mapreduce.rpc.WorkerRpcService;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
 
 /**
@@ -70,27 +69,35 @@ public class Scheduler {
          */
         CountDownLatch latch = new CountDownLatch(nTasks);
         Channel<Integer> taskChan = new Channel<Integer>();
-        for(int taskNum=0;taskNum<nTasks;taskNum++){
+        //Set hs = new HashSet();
+        for(int taskNum=0;taskNum<nTasks;taskNum++) {
             final int i = taskNum;
             final int j = nOther;
-            try {
+            /*try {
                 taskChan.write(taskNum);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
-
+            }*/
+        //}
+        //for() {
                 new Thread(()->{
 
                         String w = null;
                         try {
                             w = registerChan.read();
                             DoTaskArgs arg = new DoTaskArgs(jobName, mapFiles[i], phase, i, j);
-                          //  try {
+                            try {
                                 Call.getWorkerRpcService(w).doTask(arg);
-                          //  }catch(SofaRpcException e) {
                                 registerChan.write(w);  // when success put worker back to waiting pool
-                         //   }
-                            latch.countDown();
+                                latch.countDown();
+                            }catch(SofaTimeOutException e) {
+                                //hs.add(i);
+                                w = registerChan.read();
+                                Call.getWorkerRpcService(w).doTask(arg);
+                                registerChan.write(w);  // when success put worker back to waiting pool
+                                latch.countDown();
+                            }
+
 
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -98,6 +105,32 @@ public class Scheduler {
 
                 }).start();
         }
+   //     Iterator it = hs.iterator();
+ /*       while(it.hasNext()){
+            int item = (Integer) it.next();
+            final int j = nOther;
+            new Thread(()->{
+
+                String w = null;
+                try {
+                    w = registerChan.read();
+                    DoTaskArgs arg = new DoTaskArgs(jobName, mapFiles[item], phase, item, j);
+                    try {
+                        Call.getWorkerRpcService(w).doTask(arg);
+                        registerChan.write(w);  // when success put worker back to waiting pool
+                        latch.countDown();
+                        it.remove();
+                    }catch(SofaTimeOutException e) {
+                        e.printStackTrace();
+                    }
+
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }).start();
+        }*/
              try {
                 latch.await();
             } catch (InterruptedException e) {

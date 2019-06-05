@@ -68,6 +68,12 @@ public class Mapper {
      * @param mapFunc the user-defined map function
      */
     public static void doMap(String jobName, int mapTask, String inFile, int nReduce, MapFunc mapFunc) {
+        /**
+         * inputContent, err := ioutil.ReadFile(inFile)
+         *     if err != nil {
+         *         panic(err)
+         *     }
+         */
         List<File> files = new ArrayList<File>();
         List<FileOutputStream> fos= new ArrayList<FileOutputStream>();
         List<JSONArray> list = new ArrayList<JSONArray>();
@@ -85,7 +91,22 @@ public class Mapper {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        /**
+         *     keyValues := mapF(inFile, string(inputContent))
+         */
         List<KeyValue> pair = mapFunc.map(inFile, String.valueOf(content));
+        /**
+         *  var intermediateFileEncoders []*json.Encoder
+         *     for reduceTaskNumber := 0; reduceTaskNumber < nReduce; reduceTaskNumber++ {
+         *         intermediateFile, err := os.Create(reduceName(jobName, mapTask, reduceTaskNumber))
+         *         if err != nil {
+         *             panic(err)
+         *         }
+         *         defer intermediateFile.Close()
+         *         enc := json.NewEncoder(intermediateFile)
+         *         intermediateFileEncoders = append(intermediateFileEncoders, enc)
+         *     }
+         */
         for (int i=0;i<nReduce;i++){
             try {
                 files.add(new File(reduceName(jobName, mapTask, i)));
@@ -95,6 +116,14 @@ public class Mapper {
             }
             list.add(new JSONArray());
         }
+        /**
+         * for _, kv := range keyValues {
+         *         err := intermediateFileEncoders[ihash(kv.Key) % nReduce].Encode(kv)
+         *         if err != nil {
+         *             panic(err)
+         *         }
+         *     }
+         */
         for(KeyValue item : pair)    {
             int basket = hashCode(item.key) % nReduce;
             JSONArray filearray = list.get(basket);
