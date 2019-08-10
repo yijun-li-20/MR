@@ -6,8 +6,7 @@ package sjtu.sdic.mapreduce.core;
 public interface ReduceFunc {
 
     /**
-     *
-     * @param key the key
+     * @param key    the key
      * @param values the values with the same key
      * @return reducing result
      */

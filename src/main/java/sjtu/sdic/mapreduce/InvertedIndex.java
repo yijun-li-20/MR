@@ -26,7 +26,7 @@ public class InvertedIndex {
          *     }
          *     return kvs
          */
-        List<KeyValue> list=new ArrayList<>();
+        List<KeyValue> list = new ArrayList<>();
         Pattern p = Pattern.compile("[a-zA-Z]+");
         Matcher m = p.matcher(value);
         while (m.find()) {
@@ -59,7 +59,7 @@ public class InvertedIndex {
         Set<String> ts = new TreeSet<>();
         Collections.addAll(ts, values);
         StringBuffer s = new StringBuffer();
-        for(String it:ts){
+        for (String it : ts) {
             s.append(" ");
             s.append(it);
 

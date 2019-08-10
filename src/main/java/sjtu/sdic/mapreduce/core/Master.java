@@ -29,7 +29,7 @@ import static sjtu.sdic.mapreduce.common.Utils.debug;
 
 /**
  * Master holds all the state that the master needs to keep track of.
- *
+ * <p>
  * Created by Cachhe on 2019/4/19.
  */
 public class Master implements MasterRpcService {
@@ -75,9 +75,9 @@ public class Master implements MasterRpcService {
      * complete before running the next.
      *
      * @param jobName the job name, which affects the output file's name
-     * @param files files' name (if in same dir, it's also the files' path)
+     * @param files   files' name (if in same dir, it's also the files' path)
      * @param nReduce the number of reduce task that will be run ("R" in the paper)
-     * @param mapF user-defined map function
+     * @param mapF    user-defined map function
      * @param reduceF user-defined reduce function
      * @return master instance
      */
@@ -187,14 +187,14 @@ public class Master implements MasterRpcService {
     /**
      * Distributed schedules map and reduce tasks on workers that register with the
      * master over RPC.
-     *
+     * <p>
      * the params are similar to {@link Master#sequential(String, String[], int, MapFunc, ReduceFunc)}
      * except that {@code master} is the master's address
      *
      * @param jobName
      * @param files
      * @param nReduce
-     * @param master the master's address
+     * @param master  the master's address
      * @return master instance
      */
     public static Master distributed(String jobName, String[] files, int nReduce, String master) {
@@ -239,7 +239,7 @@ public class Master implements MasterRpcService {
      * @param files
      * @param nReduce
      * @param schedule schedule function called to schedule map and reduce tasks
-     * @param finish finish function called when all tasks are done
+     * @param finish   finish function called when all tasks are done
      */
     public void run(String jobName, String[] files, int nReduce, Func<Void, JobPhase> schedule, Func<Void, Void> finish) {
         this.jobName = jobName;
@@ -276,8 +276,7 @@ public class Master implements MasterRpcService {
 
     public void removeFile(String n) {
         File file = new File(n);
-        if (file.exists() && !file.delete())
-            System.err.println("CleanupFiles error");
+        if (file.exists() && !file.delete()) System.err.println("CleanupFiles error");
     }
 
     public void cleanupFiles() {
@@ -293,28 +292,22 @@ public class Master implements MasterRpcService {
     }
 
     private void startRPCServer() {
-        if (isExported)
-            return;
+        if (isExported) return;
 
         if (rpc == null) {
             // start RPC server
-            ServerConfig serverConfig = new ServerConfig()
-                    .setProtocol("bolt") // Set a protocol, which is bolt by default
+            ServerConfig serverConfig = new ServerConfig().setProtocol("bolt") // Set a protocol, which is bolt by default
                     .setPort(MASTER_PORT) // set a port, which is 12200 by default: MASTER_PORT
                     .setDaemon(true); // daemon thread
 
-            rpc = new ProviderConfig<MasterRpcService>()
-                    .setInterfaceId(MasterRpcService.class.getName()) // Specify the interface
-                    .setUniqueId(address)
-                    .setRef(this) // Specify the implementation
+            rpc = new ProviderConfig<MasterRpcService>().setInterfaceId(MasterRpcService.class.getName()) // Specify the interface
+                    .setUniqueId(address).setRef(this) // Specify the implementation
                     .setServer(serverConfig); // Specify the server
 
             rpc.export();
 
-            ConsumerConfig<MasterRpcService> consumerConfig = new ConsumerConfig<MasterRpcService>()
-                    .setInterfaceId(MasterRpcService.class.getName()) // Specify the interface
-                    .setUniqueId(address)
-                    .setProtocol("bolt") // Specify the protocol
+            ConsumerConfig<MasterRpcService> consumerConfig = new ConsumerConfig<MasterRpcService>().setInterfaceId(MasterRpcService.class.getName()) // Specify the interface
+                    .setUniqueId(address).setProtocol("bolt") // Specify the protocol
                     .setDirectUrl("bolt://127.0.0.1:" + Master.MASTER_PORT); // Specify the direct connection address
 
             masterRpcServiceMap.put(address, consumerConfig.refer());
@@ -336,8 +329,7 @@ public class Master implements MasterRpcService {
             Call.getMasterRpcService(address).shutdown();
             debug("cleanupRegistration: done");
         } catch (Exception e) {
-            if (Utils.debugEnabled)
-                e.printStackTrace();
+            if (Utils.debugEnabled) e.printStackTrace();
             System.err.println(String.format("Cleanup: RPC %s error", address));
         }
     }
@@ -374,8 +366,7 @@ public class Master implements MasterRpcService {
 
             try {
                 // only suitable for small files
-                JSONObject json = JSONObject.parseObject(new String(Files.readAllBytes(new File(p).toPath()), StandardCharsets.UTF_8),
-                        Feature.OrderedField);
+                JSONObject json = JSONObject.parseObject(new String(Files.readAllBytes(new File(p).toPath()), StandardCharsets.UTF_8), Feature.OrderedField);
                 kvs.putAll(json.getInnerMap());
             } catch (IOException e) {
                 e.printStackTrace();
@@ -387,8 +378,7 @@ public class Master implements MasterRpcService {
 
         File file = new File("mrtmp." + jobName);
         // files are allowed to be overwritten
-        try (BufferedWriter bw = Files.newBufferedWriter(file.toPath(),
-                Charset.forName("UTF-8"))) {
+        try (BufferedWriter bw = Files.newBufferedWriter(file.toPath(), Charset.forName("UTF-8"))) {
 
             keyList.forEach(k -> {
                 try {

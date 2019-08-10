@@ -1,21 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="22fa30cf-36f1-4edb-905d-3b917c58a604" name="Default Changelist" comment="-">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/InvertedIndex.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/InvertedIndex.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/core/Mapper.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/core/Mapper.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/core/Master.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/core/Master.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/core/Scheduler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/core/Scheduler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/core/Worker.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/core/Worker.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/sjtu/sdic/mapreduce/InvertedIndex.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/sjtu/sdic/mapreduce/InvertedIndex.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/sjtu/sdic/mapreduce/WordCount.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/sjtu/sdic/mapreduce/WordCount.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/sjtu/sdic/mapreduce/common/Utils.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/sjtu/sdic/mapreduce/common/Utils.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/sjtu/sdic/mapreduce/core/Mapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/sjtu/sdic/mapreduce/core/Mapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/sjtu/sdic/mapreduce/core/Reducer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/sjtu/sdic/mapreduce/core/Reducer.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/sjtu/sdic/mapreduce/core/Scheduler$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/sjtu/sdic/mapreduce/core/Scheduler$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/sjtu/sdic/mapreduce/core/Scheduler.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/sjtu/sdic/mapreduce/core/Scheduler.class" afterDir="false" />
-    </list>
+    <list default="true" id="22fa30cf-36f1-4edb-905d-3b917c58a604" name="Default Changelist" comment="-" />
     <ignored path="$PROJECT_DIR$/classes/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -62,7 +48,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/InvertedIndex.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="473">
@@ -92,7 +78,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/core/Master.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="318">
@@ -485,7 +471,7 @@
       <option name="presentableId" value="Default" />
       <updated>1557808793432</updated>
       <workItem from="1557808795293" duration="4857000" />
-      <workItem from="1558354236420" duration="44859000" />
+      <workItem from="1558354236420" duration="45485000" />
     </task>
     <task id="LOCAL-00001" summary="-">
       <created>1559670174121</created>
@@ -530,7 +516,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="49716000" />
+    <option name="totallyTimeSpent" value="50342000" />
   </component>
   <component name="TodoView" selected-index="3">
     <todo-panel id="selected-file">
@@ -543,7 +529,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1440" height="900" extended-state="6" />
-    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" sideWeight="0.49840763" visible="true" weight="0.2532189" />
       <window_info id="Structure" order="1" sideWeight="0.50159234" side_tool="true" weight="0.2532189" />
@@ -808,16 +793,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/core/Master.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="318">
-          <caret line="35" column="48" selection-start-line="35" selection-start-column="48" selection-end-line="35" selection-end-column="48" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/common/Utils.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="90">
@@ -880,6 +855,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="473">
           <caret line="67" column="39" selection-start-line="67" selection-start-column="39" selection-end-line="67" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/sjtu/sdic/mapreduce/core/Master.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="318">
+          <caret line="35" column="48" selection-start-line="35" selection-start-column="48" selection-end-line="35" selection-end-column="48" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>

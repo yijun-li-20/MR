@@ -26,10 +26,10 @@ public class Scheduler {
      * suitable for passing to {@link Call}. registerChan will yield all
      * existing registered workers (if any) and new ones as they register.
      *
-     * @param jobName job name
-     * @param mapFiles files' name (if in same dir, it's also the files' path)
-     * @param nReduce the number of reduce task that will be run ("R" in the paper)
-     * @param phase MAP or REDUCE
+     * @param jobName      job name
+     * @param mapFiles     files' name (if in same dir, it's also the files' path)
+     * @param nReduce      the number of reduce task that will be run ("R" in the paper)
+     * @param phase        MAP or REDUCE
      * @param registerChan register info channel
      */
     public static void schedule(String jobName, String[] mapFiles, int nReduce, JobPhase phase, Channel<String> registerChan) {
@@ -70,7 +70,7 @@ public class Scheduler {
         CountDownLatch latch = new CountDownLatch(nTasks);
         Channel<Integer> taskChan = new Channel<Integer>();
         //Set hs = new HashSet();
-        for(int taskNum=0;taskNum<nTasks;taskNum++) {
+        for (int taskNum = 0; taskNum < nTasks; taskNum++) {
             final int i = taskNum;
             final int j = nOther;
             /*try {
@@ -78,34 +78,34 @@ public class Scheduler {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }*/
-        //}
-        //for() {
-                new Thread(()->{
+            //}
+            //for() {
+            new Thread(() -> {
 
-                        String w = null;
-                        try {
-                            w = registerChan.read();
-                            DoTaskArgs arg = new DoTaskArgs(jobName, mapFiles[i], phase, i, j);
-                            try {
-                                Call.getWorkerRpcService(w).doTask(arg);
-                                registerChan.write(w);  // when success put worker back to waiting pool
-                                latch.countDown();
-                            }catch(SofaTimeOutException e) {
-                                //hs.add(i);
-                                w = registerChan.read();
-                                Call.getWorkerRpcService(w).doTask(arg);
-                                registerChan.write(w);  // when success put worker back to waiting pool
-                                latch.countDown();
-                            }
+                String w = null;
+                try {
+                    w = registerChan.read();
+                    DoTaskArgs arg = new DoTaskArgs(jobName, mapFiles[i], phase, i, j);
+                    try {
+                        Call.getWorkerRpcService(w).doTask(arg);
+                        registerChan.write(w);  // when success put worker back to waiting pool
+                        latch.countDown();
+                    } catch (SofaTimeOutException e) {
+                        //hs.add(i);
+                        w = registerChan.read();
+                        Call.getWorkerRpcService(w).doTask(arg);
+                        registerChan.write(w);  // when success put worker back to waiting pool
+                        latch.countDown();
+                    }
 
 
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-                }).start();
+            }).start();
         }
-   //     Iterator it = hs.iterator();
+        //     Iterator it = hs.iterator();
  /*       while(it.hasNext()){
             int item = (Integer) it.next();
             final int j = nOther;
@@ -131,14 +131,14 @@ public class Scheduler {
 
             }).start();
         }*/
-             try {
-                latch.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
 
-         /*     for task := range taskChan {            //所有任务都处理完后跳出循环
+        /*     for task := range taskChan {            //所有任务都处理完后跳出循环
          *         worker := <- registerChan         //消费worker
          *         fmt.Printf("given task %d to %s in %s\n", task, worker, phase)
          *
@@ -170,7 +170,7 @@ public class Scheduler {
          *
          *     }
          */
-        
+
 
         System.out.println(String.format("Schedule: %s done", phase));
     }

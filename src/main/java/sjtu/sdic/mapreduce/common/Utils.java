@@ -7,8 +7,7 @@ public class Utils {
     public static boolean debugEnabled = false;
 
     public static void debug(String msg) {
-        if (debugEnabled)
-            System.out.println(msg);
+        if (debugEnabled) System.out.println(msg);
     }
 
     /**
@@ -16,12 +15,12 @@ public class Utils {
      * <mapTask> produces for reduce task <reduceTask>.
      *
      * @param jobName
-     * @param mapTask map task id
+     * @param mapTask    map task id
      * @param reduceTask reduce task id
      * @return
      */
     public static String reduceName(String jobName, int mapTask, int reduceTask) {
-        return "mrtmp." + jobName + "-" + mapTask+ "-" + reduceTask;
+        return "mrtmp." + jobName + "-" + mapTask + "-" + reduceTask;
     }
 
     /**

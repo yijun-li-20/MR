@@ -22,41 +22,39 @@ import static sjtu.sdic.mapreduce.common.Utils.reduceName;
 public class Reducer {
 
     /**
-     * 
-     * 	doReduce manages one reduce task: it should read the intermediate
-     * 	files for the task, sort the intermediate key/value pairs by key,
-     * 	call the user-defined reduce function {@code reduceFunc} for each key,
-     * 	and write reduceFunc's output to disk.
-     * 	
-     * 	You'll need to read one intermediate file from each map task;
-     * 	{@code reduceName(jobName, m, reduceTask)} yields the file
-     * 	name from map task m.
+     * doReduce manages one reduce task: it should read the intermediate
+     * files for the task, sort the intermediate key/value pairs by key,
+     * call the user-defined reduce function {@code reduceFunc} for each key,
+     * and write reduceFunc's output to disk.
+     * <p>
+     * You'll need to read one intermediate file from each map task;
+     * {@code reduceName(jobName, m, reduceTask)} yields the file
+     * name from map task m.
+     * <p>
+     * Your {@code doMap()} encoded the key/value pairs in the intermediate
+     * files, so you will need to decode them. If you used JSON, you can refer
+     * to related docs to know how to decode.
+     * <p>
+     * In the original paper, sorting is optional but helpful. Here you are
+     * also required to do sorting. Lib is allowed.
+     * <p>
+     * {@code reduceFunc()} is the application's reduce function. You should
+     * call it once per distinct key, with a slice of all the values
+     * for that key. {@code reduceFunc()} returns the reduced value for that
+     * key.
+     * <p>
+     * You should write the reduce output as JSON encoded KeyValue
+     * objects to the file named outFile. We require you to use JSON
+     * because that is what the merger than combines the output
+     * from all the reduce tasks expects. There is nothing special about
+     * JSON -- it is just the marshalling format we chose to use.
+     * <p>
+     * Your code here (Part I).
      *
-     * 	Your {@code doMap()} encoded the key/value pairs in the intermediate
-     * 	files, so you will need to decode them. If you used JSON, you can refer
-     * 	to related docs to know how to decode.
-     * 	
-     *  In the original paper, sorting is optional but helpful. Here you are
-     *  also required to do sorting. Lib is allowed.
-     * 	
-     * 	{@code reduceFunc()} is the application's reduce function. You should
-     * 	call it once per distinct key, with a slice of all the values
-     * 	for that key. {@code reduceFunc()} returns the reduced value for that
-     * 	key.
-     * 	
-     * 	You should write the reduce output as JSON encoded KeyValue
-     * 	objects to the file named outFile. We require you to use JSON
-     * 	because that is what the merger than combines the output
-     * 	from all the reduce tasks expects. There is nothing special about
-     * 	JSON -- it is just the marshalling format we chose to use.
-     * 	
-     * 	Your code here (Part I).
-     * 	
-     * 	
-     * @param jobName the name of the whole MapReduce job
+     * @param jobName    the name of the whole MapReduce job
      * @param reduceTask which reduce task this is
-     * @param outFile write the output here
-     * @param nMap the number of map tasks that were run ("M" in the paper)
+     * @param outFile    write the output here
+     * @param nMap       the number of map tasks that were run ("M" in the paper)
      * @param reduceFunc user-defined reduce function
      */
     public static void doReduce(String jobName, int reduceTask, String outFile, int nMap, ReduceFunc reduceFunc) {
@@ -85,8 +83,7 @@ public class Reducer {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(debugEnabled)
-                System.out.println(content);
+            if (debugEnabled) System.out.println(content);
             /*
                 dec := json.NewDecoder(file)
              */
@@ -114,8 +111,7 @@ public class Reducer {
                     List<String> pair = new ArrayList<>();
                     pair.add(item.value);
                     kvs.put(item.key, pair);
-                }
-                else {
+                } else {
                     List<String> values = kvs.get(item.key);
                     values.add(item.value);
                     kvs.put(item.key, values);
@@ -137,7 +133,7 @@ public class Reducer {
         try {
             FileWriter fw = new FileWriter(outFile);
             JSONObject jsonObject = new JSONObject();
-            for (String key:keys) {
+            for (String key : keys) {
                 List<String> l = kvs.get(key);
                 String[] values = l.toArray(new String[l.size()]);
                 String value = reduceFunc.reduce(key, values);
@@ -150,6 +146,6 @@ public class Reducer {
         }
 
 
-        }
+    }
 
 }

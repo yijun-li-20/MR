@@ -5,7 +5,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * track whether workers executed in parallel.
- *
+ * <p>
  * Created by Cachhe on 2019/4/22.
  */
 public class Parallelism {

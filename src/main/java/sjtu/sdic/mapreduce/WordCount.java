@@ -27,7 +27,7 @@ public class WordCount {
             }
             return kvs
          */
-        List<KeyValue> list=new ArrayList<>();
+        List<KeyValue> list = new ArrayList<>();
         Pattern p = Pattern.compile("[a-zA-Z0-9]+");
         Matcher m = p.matcher(value);
         while (m.find()) {
@@ -41,7 +41,7 @@ public class WordCount {
                 return strconv.Itoa(len(values))
          */
         int count = 0;
-        for(String item: values){
+        for (String item : values) {
             count += Integer.valueOf(item);
         }
         return Integer.toString(count);

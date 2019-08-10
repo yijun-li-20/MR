@@ -24,7 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Worker holds the state for a server waiting for DoTask or Shutdown RPCs
- *
+ * <p>
  * Created by Cachhe on 2019/4/22.
  */
 public class Worker implements WorkerRpcService {
@@ -57,7 +57,6 @@ public class Worker implements WorkerRpcService {
     /**
      * Shutdown is called by the master when all work has been completed.
      * We should respond with the number of tasks we have processed.
-     *
      */
     @Override
     public int shutdown() {
@@ -82,8 +81,7 @@ public class Worker implements WorkerRpcService {
      */
     @Override
     public void doTask(DoTaskArgs arg) {
-        System.out.println(String.format("%s: given %s task #%d on file %s (nios: %d)",
-                name, arg.phase, arg.taskNum, arg.file, arg.numOtherPhase));
+        System.out.println(String.format("%s: given %s task #%d on file %s (nios: %d)", name, arg.phase, arg.taskNum, arg.file, arg.numOtherPhase));
 
         int nc;
         try {
@@ -108,10 +106,8 @@ public class Worker implements WorkerRpcService {
             try {
                 parallelism.lock.lock();
                 parallelism.now += 1;
-                if (parallelism.now > parallelism.max)
-                    parallelism.max = parallelism.now;
-                if (parallelism.max < 2)
-                    pause = true;
+                if (parallelism.now > parallelism.max) parallelism.max = parallelism.now;
+                if (parallelism.max < 2) pause = true;
             } finally {
                 parallelism.lock.unlock();
             }
@@ -159,15 +155,14 @@ public class Worker implements WorkerRpcService {
      * RunWorker sets up a connection with the master, registers its address, and
      * waits for tasks to be scheduled.
      *
-     * @param master master address
-     * @param me worker address
-     * @param mapF user-defined map function
-     * @param reduceF user-defined reduce function
-     * @param nRPC maximum service times, counting by each request
+     * @param master      master address
+     * @param me          worker address
+     * @param mapF        user-defined map function
+     * @param reduceF     user-defined reduce function
+     * @param nRPC        maximum service times, counting by each request
      * @param parallelism test whether runs in parallel, nullable
      */
-    public static void runWorker(String master, String me, MapFunc mapF,
-                          ReduceFunc reduceF, int nRPC, Parallelism parallelism) {
+    public static void runWorker(String master, String me, MapFunc mapF, ReduceFunc reduceF, int nRPC, Parallelism parallelism) {
         Utils.debug(String.format("RunWorker %s", me));
 
         Worker wk = new Worker();
@@ -182,14 +177,14 @@ public class Worker implements WorkerRpcService {
 
     /**
      * Tell the master we exist and ready to work
+     *
      * @param master master address
      */
     public void register(String master) {
         try {
             Call.getMasterRpcService(master).register(name);
         } catch (Exception e) {
-            if (Utils.debugEnabled)
-                e.printStackTrace();
+            if (Utils.debugEnabled) e.printStackTrace();
             System.err.println(String.format("Register: RPC %s register error", name));
             shutdown();
         }
@@ -198,7 +193,7 @@ public class Worker implements WorkerRpcService {
     /**
      * generate a valid RPC service port according to the
      * worker address (name)
-     *
+     * <p>
      * Note: there may be port CONFLICTS with little probability
      * if u encounter with this, try to rename the worker
      *
@@ -237,24 +232,18 @@ public class Worker implements WorkerRpcService {
     }
 
     private void run(String master) {
-        ServerConfig serverConfig = new ServerConfig()
-                .setProtocol("bolt") // Set a protocol, which is bolt by default
+        ServerConfig serverConfig = new ServerConfig().setProtocol("bolt") // Set a protocol, which is bolt by default
                 .setPort(getPort(name)) // set a port, which is 13300 by default
                 .setDaemon(true); // daemon thread
 
-        providerConfig = new ProviderConfig<WorkerRpcService>()
-                .setInterfaceId(WorkerRpcService.class.getName()) // Specify the interface
+        providerConfig = new ProviderConfig<WorkerRpcService>().setInterfaceId(WorkerRpcService.class.getName()) // Specify the interface
                 .setRef(this) // Specify the implementation
-                .setUniqueId(name)
-                .setFilterRef(Collections.singletonList(new RPCFilter(this)))
-                .setServer(serverConfig); // Specify the server
+                .setUniqueId(name).setFilterRef(Collections.singletonList(new RPCFilter(this))).setServer(serverConfig); // Specify the server
 
         providerConfig.export(); // Publish service
 
-        ConsumerConfig<WorkerRpcService> consumerConfig = new ConsumerConfig<WorkerRpcService>()
-                .setInterfaceId(WorkerRpcService.class.getName()) // Specify the interface
-                .setUniqueId(name)
-                .setProtocol("bolt") // Specify the protocol
+        ConsumerConfig<WorkerRpcService> consumerConfig = new ConsumerConfig<WorkerRpcService>().setInterfaceId(WorkerRpcService.class.getName()) // Specify the interface
+                .setUniqueId(name).setProtocol("bolt") // Specify the protocol
                 .setDirectUrl("bolt://127.0.0.1:" + Worker.getPort(name)); // Specify the direct connection address
         workerRpcServiceMap.put(name, consumerConfig.refer());
         workerConsumerMap.put(name, consumerConfig);

@@ -5,7 +5,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * This is a simple Java-simulation of chan in Go-lang
- *
+ * <p>
  * Created by Cachhe on 2019/4/19.
  */
 public class Channel<T> {
@@ -36,6 +36,7 @@ public class Channel<T> {
 
     /**
      * wrapper for {@link BlockingQueue#poll()}
+     *
      * @return value or null if no value, without blocking
      */
     public T poll() {

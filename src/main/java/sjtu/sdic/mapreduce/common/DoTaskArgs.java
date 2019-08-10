@@ -3,7 +3,7 @@ package sjtu.sdic.mapreduce.common;
 /**
  * DoTaskArgs holds the arguments that are passed to a worker when
  * a job is scheduled on it.
- *
+ * <p>
  * Created by Cachhe on 2019/4/23.
  */
 public class DoTaskArgs {

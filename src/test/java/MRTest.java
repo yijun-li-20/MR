@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MRTest {
 
     public static final int N_NUMBER = 100000;
-    public static final int N_Map    = 20;
+    public static final int N_Map = 20;
     public static final int N_Reduce = 10;
 
     // Split in words
@@ -55,9 +55,7 @@ public class MRTest {
             names[k] = String.format("824-mrinput-%d.txt", k);
             File file = new File(names[k]);
 
-            try (BufferedWriter bw = Files.newBufferedWriter(file.toPath(),
-                    Charset.forName("UTF-8"),
-                    StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)){
+            try (BufferedWriter bw = Files.newBufferedWriter(file.toPath(), Charset.forName("UTF-8"), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)) {
 
                 while (i < (k + 1) * (N_NUMBER / num)) {
                     bw.write(String.format("%d\n", i));
@@ -91,12 +89,12 @@ public class MRTest {
 
         File output = new File("mrtmp.test");
         int i = 0;
-        try (BufferedReader br = Files.newBufferedReader(output.toPath())){
+        try (BufferedReader br = Files.newBufferedReader(output.toPath())) {
             String text;
             while ((text = br.readLine()) != null) {
                 int v1 = Integer.valueOf(text.split(":")[0]);
                 int v2 = Integer.valueOf(lines.get(i).split(":")[0]);
-                TestCase.assertFalse(String.format("line %d: %d != %d", i, v1, v2),v1 != v2);
+                TestCase.assertFalse(String.format("line %d: %d != %d", i, v1, v2), v1 != v2);
                 i++;
             }
 
@@ -109,6 +107,7 @@ public class MRTest {
     /**
      * Workers report back how many RPCs they have processed in the Shutdown reply.
      * Check that they processed at least 1 DoTask RPC.
+     *
      * @param stats
      */
     public void checkWorker(List<Integer> stats) {
@@ -119,7 +118,6 @@ public class MRTest {
 
     /**
      * this checks threads alive after map reduce task finish.
-     *
      */
     public void checkThread() {
         try {
@@ -130,24 +128,21 @@ public class MRTest {
 
         Thread main = Thread.currentThread();
 
-        ThreadGroup currentGroup =
-                Thread.currentThread().getThreadGroup();
+        ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
         int noThreads = currentGroup.activeCount();
         Thread[] lstThreads = new Thread[noThreads];
         currentGroup.enumerate(lstThreads);
-        for (int i = 0; i < noThreads; i++){
-            System.out.println("thread no：" + i + " = " + lstThreads[i].getName() + " "
-            + lstThreads[i].getState().name());
+        for (int i = 0; i < noThreads; i++) {
+            System.out.println("thread no：" + i + " = " + lstThreads[i].getName() + " " + lstThreads[i].getState().name());
 
             if (lstThreads[i].getId() != main.getId())
-                TestCase.assertTrue(String.format("%s is not daemon", lstThreads[i].toString()), lstThreads[i].isDaemon() );
+                TestCase.assertTrue(String.format("%s is not daemon", lstThreads[i].toString()), lstThreads[i].isDaemon());
         }
     }
 
 
     public void cleanup(Master mr) {
-        if (mr == null)
-            return;
+        if (mr == null) return;
 
         mr.cleanupFiles();
         for (String f : mr.files) {
@@ -193,8 +188,7 @@ public class MRTest {
             mr = setup();
             AtomicInteger temp = new AtomicInteger(1);
             for (int i = 0; i < 2; i++) {
-                Worker.runWorker(mr.address, "worker" + temp.getAndIncrement(),
-                        this::mapFunc, this::reduceFunc, -1, null);
+                Worker.runWorker(mr.address, "worker" + temp.getAndIncrement(), this::mapFunc, this::reduceFunc, -1, null);
             }
             mr.mWait();
             check(mr.files);
@@ -213,8 +207,7 @@ public class MRTest {
             AtomicInteger temp = new AtomicInteger(1);
             Parallelism parallelism = new Parallelism();
             for (int i = 0; i < 2; i++) {
-                Worker.runWorker(mr.address, "worker" + temp.getAndIncrement(),
-                        this::mapFunc, this::reduceFunc, -1, parallelism);
+                Worker.runWorker(mr.address, "worker" + temp.getAndIncrement(), this::mapFunc, this::reduceFunc, -1, parallelism);
             }
 
             mr.mWait();
@@ -239,10 +232,8 @@ public class MRTest {
         Master mr = null;
         try {
             mr = setup();
-            Worker.runWorker(mr.address, "worker1",
-                    this::mapFunc, this::reduceFunc, 5, null);
-            Worker.runWorker(mr.address, "worker2",
-                    this::mapFunc, this::reduceFunc, -1, null);
+            Worker.runWorker(mr.address, "worker1", this::mapFunc, this::reduceFunc, 5, null);
+            Worker.runWorker(mr.address, "worker2", this::mapFunc, this::reduceFunc, -1, null);
 
             mr.mWait();
             check(mr.files);

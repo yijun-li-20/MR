@@ -10,8 +10,7 @@ import java.util.List;
 public interface MapFunc {
 
     /**
-     *
-     * @param file the path, if in the same dir, then it can be the filename
+     * @param file     the path, if in the same dir, then it can be the filename
      * @param contents the contents of the file, must be coded in UTF-8
      * @return a list of k-vs
      */
